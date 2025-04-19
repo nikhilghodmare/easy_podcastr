@@ -15,13 +15,26 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
     return new Response("Invalid request", { status: 400 });
   }
   switch (event.type) {
-    case "user.created":
-      await ctx.runMutation(internal.users.createUser, {
-        clerkId: event.data.id,
-        email: event.data.email_addresses[0].email_address,
-        imageUrl: event.data.image_url,
-        name: event.data.first_name!,
-      });
+    
+      case "user.created": {
+        const email = event.data.email_addresses?.[0]?.email_address ?? "";
+        const fallbackName = email?.split("@")[0] ?? "User";
+        const firstName = event.data.first_name ?? "";
+        const lastName = event.data.last_name ?? "";
+      
+        const name =
+          firstName && lastName
+            ? `${firstName} ${lastName}`
+            : firstName || lastName || fallbackName;
+      
+        await ctx.runMutation(internal.users.createUser, {
+          clerkId: event.data.id,
+          email,
+          imageUrl: event.data.image_url,
+          name,
+        });
+        break;
+      }
       break;
     case "user.updated":
       await ctx.runMutation(internal.users.updateUser, {

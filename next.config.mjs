@@ -4,6 +4,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'beloved-chickadee-201.convex.cloud',
+        pathname: '/api/storage/**', // optional but recommended
+      },
+      {
+        protocol: 'https',
         hostname: 'lovely-flamingo-139.convex.cloud'
       },
       {
